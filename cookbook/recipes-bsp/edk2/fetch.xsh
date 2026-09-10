@@ -28,6 +28,7 @@ _DISTRO_MAJOR = os.environ.get('DISTRO_MAJOR')
 _DISTRO_MINOR = os.environ.get('DISTRO_MINOR')
 _DISTRO_PATCH = os.environ.get('DISTRO_PATCH')
 _USER_PASSWD = os.environ.get('USER_PASSWD')
+_HOME = os.environ.get('HOME')
 
 # read the meta data
 meta = json.loads(os.environ.get('META', '{}'))
@@ -41,25 +42,47 @@ os.environ['IMAGE_MNT_BOOT'] = _IMAGE_MNT_BOOT
 os.environ['IMAGE_MNT_ROOT'] = _IMAGE_MNT_ROOT
 
 
+_BUILD_ROOT = f"{_BUILD_PATH}/tmp/{_MACHINE}"
+_EDKREPO_DIR = f"{_BUILD_ROOT}/edkrepo"
+_WORKSPACE = f"{_BUILD_ROOT}/edk2_workspace"
+_EDK2_NVIDIA_REF = meta["ref"]["linux/arm64"]
+# the edkrepo combo (manifest branch) that matches the pinned edk2-nvidia ref
+_COMBO = meta["customData"]["nvidia_manifest"]["ref"]
+
+os.makedirs(_BUILD_ROOT, exist_ok=True)
+
 # edk repo is a dependencie
 if _CLEAN == "true":
-    if os.path.exists(f"{_BUILD_PATH}/tmp/{_MACHINE}/edkrepo"):
-        rm -rf @(f"{_BUILD_PATH}/tmp/{_MACHINE}/edkrepo")
+    if os.path.exists(_EDKREPO_DIR):
+        rm -rf @(_EDKREPO_DIR)
+    if os.path.exists(_WORKSPACE):
+        rm -rf @(_WORKSPACE)
 
-if not os.path.exists(f"{_BUILD_PATH}/tmp/{_MACHINE}/edkrepo"):
-    os.chdir(f"{_BUILD_PATH}/tmp/{_MACHINE}")
-    mkdir -p @(f"{_BUILD_PATH}/tmp/{_MACHINE}/edkrepo")
-    os.chdir(f"{_BUILD_PATH}/tmp/{_MACHINE}/edkrepo")
+if not os.path.exists(_EDKREPO_DIR):
+    os.chdir(f"{_BUILD_ROOT}")
+    mkdir -p @(_EDKREPO_DIR)
+    os.chdir(_EDKREPO_DIR)
     wget -O- @(meta["customData"]["tianocore_repo"]["url"]) | tar zxvf -
 
+# install edkrepo for the build user
+os.chdir(_EDKREPO_DIR)
+sudo ./install.py --no-prompt --user gaia
+sudo chown -R gaia. @(f"{_HOME}/.edkrepo")
 
-# clone it to the _BUILD_PATH
-if not os.path.exists(f"{_BUILD_PATH}/tmp/{_MACHINE}/edk2-nvidia"):
-    os.chdir(f"{_BUILD_PATH}/tmp/{_MACHINE}")
-    git clone @(meta["source"])
+# start with the edkrepo combo that matches this ref
+os.chdir(f"{_BUILD_ROOT}")
+if not os.path.exists(_WORKSPACE):
+    edkrepo clone -v edk2_workspace NVIDIA-Platforms @(_COMBO)
 
-os.chdir(f"{_BUILD_PATH}/tmp/{_MACHINE}/edk2-nvidia")
-git checkout @(meta["ref"]["linux/arm64"])
+# checkout the ref pinned in the recipe
+os.chdir(_WORKSPACE)
+git -C edk2-nvidia fetch --verbose @(meta["source"]) @(_EDK2_NVIDIA_REF)
+git -C edk2-nvidia checkout FETCH_HEAD
+
+# summarize the workspace, for debug purposes.
+git -C edk2 describe --always --dirty
+git -C edk2-platforms describe --always --dirty
+git -C edk2-nvidia describe --always --dirty
 
 
 print("Fetch edk2-nvidia, OK", color=Color.WHITE, bg_color=BgColor.GREEN)

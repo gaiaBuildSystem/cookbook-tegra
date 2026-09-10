@@ -50,10 +50,57 @@ os.environ['IMAGE_MNT_ROOT'] = _IMAGE_MNT_ROOT
 os.environ['BUILD_ROOT'] = _BUILD_ROOT
 $BUILD_ROOT = _BUILD_ROOT
 
-os.chdir(f"{_BUILD_ROOT}")
-# call the build.sh
-chmod +x ./edk2-nvidia/Platform/NVIDIA/L4TLauncher/build.sh
-./edk2-nvidia/Platform/NVIDIA/L4TLauncher/build.sh
+_WORKSPACE = f"{_BUILD_ROOT}/edk2_workspace"
+_DEPLOY_DIR = f"{_BUILD_ROOT}/deploy"
+os.chdir(f"{_WORKSPACE}")
+
+# make the build scripts executable
+for _script in [
+    "edk2-nvidia/Platform/NVIDIA/Tegra/build.sh",
+    "edk2-nvidia/Platform/NVIDIA/StandaloneMmOptee/build.sh",
+    "edk2-nvidia/Platform/NVIDIA/StandaloneMm/build.sh",
+    "edk2-nvidia/Platform/NVIDIA/StandaloneMmJetson/build.sh",
+    "edk2-nvidia/Platform/NVIDIA/DeviceTree/build.sh",
+    "edk2-nvidia/Platform/NVIDIA/L4TLauncher/build.sh",
+]:
+    chmod +x @(_script)
+
+mkdir -p @(_DEPLOY_DIR)
+
+# get the defconfig for the target machine
+_DEFCONFIG = meta["customData"]["tegra_defconfigs"].get(_MACHINE)
+if not _DEFCONFIG:
+    Error_Out(
+        f"no defconfig defined for machine [{_MACHINE}]",
+        Error.EINVAL
+    )
+
+_defconfig_path = f"edk2-nvidia/Platform/NVIDIA/Tegra/DefConfigs/{_DEFCONFIG}.defconfig"
+if not os.path.exists(_defconfig_path):
+    Error_Out(
+        f"defconfig [{_DEFCONFIG}] not found in the workspace",
+        Error.EINVAL
+    )
+
+# remove build output to avoid running out of space.  The image is kept.
+print("Removing Build directory")
+rm -rf Build
+
+print(f"Building defconfig: {_DEFCONFIG}")
+edk2-nvidia/Platform/NVIDIA/Tegra/build.sh --init-defconfig @(_defconfig_path)
+
+# keep the build logs
+cp -v Build/*.txt @(_DEPLOY_DIR)
+
+# build all non-Kconfig images
+edk2-nvidia/Platform/NVIDIA/StandaloneMmOptee/build.sh
+edk2-nvidia/Platform/NVIDIA/StandaloneMm/build.sh
+edk2-nvidia/Platform/NVIDIA/StandaloneMmJetson/build.sh
+edk2-nvidia/Platform/NVIDIA/DeviceTree/build.sh
+edk2-nvidia/Platform/NVIDIA/L4TLauncher/build.sh
+
+# copy the build logs from non-Kconfig images
+cp -v Build/*.txt @(_DEPLOY_DIR)
 
 print(
     "building edk2-nvidia, ok",

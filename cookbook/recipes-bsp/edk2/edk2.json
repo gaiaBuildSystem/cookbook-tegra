@@ -12,6 +12,13 @@
     "customData": {
         "tianocore_repo": {
             "url": "https://github.com/tianocore/edk2-edkrepo/releases/download/edkrepo-v2.1.2/edkrepo-2.1.2.tar.gz"
+        },
+        "nvidia_manifest": {
+            "url": "https://github.com/NVIDIA/edk2-edkrepo-manifest.git",
+            "ref": "add-uefi-202608.0"
+        },
+        "tegra_defconfigs": {
+            "orin": "t23x_general"
         }
     },
     "hostDeps": [
