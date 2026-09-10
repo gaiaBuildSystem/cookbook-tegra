@@ -50,10 +50,10 @@ os.environ['IMAGE_MNT_ROOT'] = _IMAGE_MNT_ROOT
 os.environ['BUILD_ROOT'] = _BUILD_ROOT
 $BUILD_ROOT = _BUILD_ROOT
 
-os.chdir(f"{_BUILD_ROOT}/edk2-nvidia/Platform/NVIDIA/L4TLauncher")
+os.chdir(f"{_BUILD_ROOT}")
 # call the build.sh
-chmod +x build.sh
-./build.sh
+chmod +x ./edk2-nvidia/Platform/NVIDIA/L4TLauncher/build.sh
+./edk2-nvidia/Platform/NVIDIA/L4TLauncher/build.sh
 
 print(
     "building edk2-nvidia, ok",
