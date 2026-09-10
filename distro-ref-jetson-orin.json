@@ -1,0 +1,21 @@
+{
+    "name": "DeimOS-Reference",
+    "machine": "orin",
+    "arch": "linux/arm64",
+    "version": {
+        "major": 0,
+        "minor": 0,
+        "patch": 0,
+        "build": 0
+    },
+    "maxImgSize": 3072,
+    "useInitramfs": true,
+    "searchForRecipesOn": [
+        "../gaia/cookbook",
+        "./cookbook"
+    ],
+    "includeRecipes": [
+        "edk2"
+    ],
+    "$schema": "./schema/distro.json"
+}

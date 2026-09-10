@@ -1,0 +1,26 @@
+{
+    "name": "edk2",
+    "type": "bootloader",
+    "priority": 0,
+    "support": [
+        "linux/arm64"
+    ],
+    "source": "https://github.com/gaiaBuildSystem/edk2-nvidia.git",
+    "ref": {
+        "linux/arm64": "d6838b81998d6e2510c57d77efd72e9cb2de19ed"
+    },
+    "hostDeps": [
+        "python3",
+        "python3-pip",
+        "virtualenv"
+    ],
+    "fetchRecipes": [
+        "fetch.xsh"
+    ],
+    "buildRecipes": [
+        "build.xsh"
+    ],
+    "deployRecipes": [
+        "deploy.xsh"
+    ]
+}
