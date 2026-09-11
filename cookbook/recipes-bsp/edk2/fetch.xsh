@@ -30,6 +30,10 @@ _DISTRO_PATCH = os.environ.get('DISTRO_PATCH')
 _USER_PASSWD = os.environ.get('USER_PASSWD')
 _HOME = os.environ.get('HOME')
 
+# make sure to accept install pip packages system-wide
+$PIP_BREAK_SYSTEM_PACKAGES="1"
+os.environ['PIP_BREAK_SYSTEM_PACKAGES'] = "1"
+
 # read the meta data
 meta = json.loads(os.environ.get('META', '{}'))
 
