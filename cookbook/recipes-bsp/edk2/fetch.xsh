@@ -70,7 +70,7 @@ if not os.path.exists(_EDKREPO_DIR):
 
 # install edkrepo for the build user
 os.chdir(_EDKREPO_DIR)
-sudo ./install.py --no-prompt --user gaia -v
+sudo -E ./install.py --no-prompt --user gaia -v
 sudo chown -R gaia. @(f"{_HOME}/.edkrepo")
 
 # start with the edkrepo combo that matches this ref
