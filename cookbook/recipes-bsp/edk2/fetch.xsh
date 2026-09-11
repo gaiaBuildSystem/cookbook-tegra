@@ -10,7 +10,9 @@ $XONSH_SUBPROC_CMD_RAISE_ERROR = True
 
 
 import os
+import sys
 import json
+import subprocess
 import os.path
 from torizon_templates_utils.colors import print,BgColor,Color
 from torizon_templates_utils.errors import Error_Out,Error
@@ -72,6 +74,16 @@ if not os.path.exists(_EDKREPO_DIR):
 os.chdir(_EDKREPO_DIR)
 sudo -E ./install.py --no-prompt --user gaia -v
 sudo chown -R gaia. @(f"{_HOME}/.edkrepo")
+
+# Fix for Python 3.11+ inspect.getargspec deprecation
+# Add sitecustomize.py shim to handle deprecated inspect.getargspec in edkrepo
+python_lib_dir = subprocess.check_output([sys.executable, "-c", "import site; print(site.getsitepackages()[0])"], text=True).strip()
+sitecustomize_path = f"{python_lib_dir}/sitecustomize.py"
+
+# Only add the shim if it doesn't already exist (idempotent)
+if not os.path.exists(sitecustomize_path):
+    # Write using xonsh command with sudo to avoid permission issues
+    sudo sh -c 'echo "import inspect\nif not hasattr(inspect, \"getargspec\"):\n    inspect.getargspec = inspect.getfullargspec" > "' + @(sitecustomize_path) + '"'
 
 # start with the edkrepo combo that matches this ref
 os.chdir(f"{_BUILD_ROOT}")
