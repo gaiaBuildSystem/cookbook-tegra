@@ -7,6 +7,10 @@
 # make sure that the system will not prompt nothing
 export DEBIAN_FRONTEND=noninteractive
 
+# Pre-configure tzdata to avoid interactive prompts
+echo "tzdata tzdata/Areas select Etc" | debconf-set-selections
+echo "tzdata tzdata/Zones/Etc select UTC" | debconf-set-selections
+
 sudo apt-get update
 sudo apt-get install -y \
     python3 \
