@@ -9,6 +9,11 @@
     "ref": {
         "linux/arm64": "d6838b81998d6e2510c57d77efd72e9cb2de19ed"
     },
+    "hostAsContainer": true,
+    "containerImage": {
+        "image": "ubuntu",
+        "tag": "22.04"
+    },
     "customData": {
         "tianocore_repo": {
             "url": "https://github.com/tianocore/edk2-edkrepo/releases/download/edkrepo-v2.1.2/edkrepo-2.1.2.tar.gz"
