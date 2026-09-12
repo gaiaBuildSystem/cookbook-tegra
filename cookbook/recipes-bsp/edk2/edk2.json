@@ -7,7 +7,7 @@
     ],
     "source": "https://github.com/gaiaBuildSystem/edk2-nvidia.git",
     "ref": {
-        "linux/arm64": "d6838b81998d6e2510c57d77efd72e9cb2de19ed"
+        "linux/arm64": "7ec179831e352bf08540dc6298680d7c91f88738"
     },
     "customData": {
         "tianocore_repo": {
