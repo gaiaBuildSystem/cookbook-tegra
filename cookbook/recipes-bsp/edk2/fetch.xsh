@@ -70,20 +70,38 @@ if not os.path.exists(_EDKREPO_DIR):
     os.chdir(_EDKREPO_DIR)
     wget -O- @(meta["customData"]["tianocore_repo"]["url"]) | tar zxvf -
 
+# Fix for Python 3.11+ inspect.getargspec deprecation - must be before edkrepo install
+# Python loads sitecustomize from the stdlib first, so write there
+sitecustomize_path = "/usr/lib/python3.13/sitecustomize.py"
+
+sitecustomize_content = (
+    "import inspect\n"
+    "if not hasattr(inspect, \"getargspec\"):\n"
+    "    inspect.getargspec = inspect.getfullargspec\n"
+)
+
+try:
+    tmp_path = "/tmp/sitecustomize_shim.py"
+    with open(tmp_path, "w") as f:
+        f.write(sitecustomize_content)
+    sudo cp @(tmp_path) @(sitecustomize_path)
+    sudo chmod 644 @(sitecustomize_path)
+    os.remove(tmp_path)
+    print(f"+ Wrote inspect.getargspec shim to {sitecustomize_path}")
+except Exception as e:
+    # Non-fatal: don't let this crash the whole fetch
+    print(f"- Warning: failed to write sitecustomize.py shim: {e}")
+
 # install edkrepo for the build user
 os.chdir(_EDKREPO_DIR)
 sudo -E ./install.py --no-prompt --user gaia -v
 sudo chown -R gaia. @(f"{_HOME}/.edkrepo")
 
-# Fix for Python 3.11+ inspect.getargspec deprecation
-# Add sitecustomize.py shim to handle deprecated inspect.getargspec in edkrepo
-python_lib_dir = subprocess.check_output([sys.executable, "-c", "import site; print(site.getsitepackages()[0])"], text=True).strip()
-sitecustomize_path = f"{python_lib_dir}/sitecustomize.py"
-
-# Only add the shim if it doesn't already exist (idempotent)
-if not os.path.exists(sitecustomize_path):
-    # Write using xonsh command with sudo to avoid permission issues
-    sudo sh -c 'echo "import inspect\nif not hasattr(inspect, \"getargspec\"):\n    inspect.getargspec = inspect.getfullargspec" > "' + @(sitecustomize_path) + '"'
+# configure edkrepo manifest repo for NVIDIA
+_MANIFEST_URL = meta["customData"]["nvidia_manifest"]["url"]
+_MANIFEST_REF = meta["customData"]["nvidia_manifest"]["ref"]
+edkrepo manifest-repos add nvidia @(_MANIFEST_URL) main nvidia
+edkrepo manifest
 
 # start with the edkrepo combo that matches this ref
 os.chdir(f"{_BUILD_ROOT}")

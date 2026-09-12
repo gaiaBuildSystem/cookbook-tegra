@@ -15,7 +15,7 @@
         },
         "nvidia_manifest": {
             "url": "https://github.com/NVIDIA/edk2-edkrepo-manifest.git",
-            "ref": "add-uefi-202608.0"
+            "ref": "uefi-202608.0"
         },
         "tegra_defconfigs": {
             "orin": "t23x_general"
@@ -33,10 +33,14 @@
         "g++-12",
         "device-tree-compiler",
         "mono-devel",
-        "lcov"
+        "lcov",
+        "acpica-tools"
     ],
     "fetchRecipes": [
         "fetch.xsh"
+    ],
+    "patchRecipes": [
+        "patch.xsh"
     ],
     "buildRecipes": [
         "build.xsh"
