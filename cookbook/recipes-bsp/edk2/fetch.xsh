@@ -100,7 +100,14 @@ sudo chown -R gaia. @(f"{_HOME}/.edkrepo")
 # configure edkrepo manifest repo for NVIDIA
 _MANIFEST_URL = meta["customData"]["nvidia_manifest"]["url"]
 _MANIFEST_REF = meta["customData"]["nvidia_manifest"]["ref"]
-edkrepo manifest-repos add nvidia @(_MANIFEST_URL) main nvidia
+
+# when it is not already present so a second run does not break.
+if "nvidia" in $(edkrepo manifest-repos list):
+    print(f"+ manifest repo 'nvidia' already registered, skipping add")
+else:
+    edkrepo manifest-repos add nvidia @(_MANIFEST_URL) main nvidia
+    print(f"+ added manifest repo 'nvidia' -> {_MANIFEST_URL}")
+
 edkrepo manifest
 
 # start with the edkrepo combo that matches this ref
