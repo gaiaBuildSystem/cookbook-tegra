@@ -15,7 +15,8 @@
         "./cookbook"
     ],
     "includeRecipes": [
-        "edk2"
+        "edk2",
+        "u-boot"
     ],
     "$schema": "./schema/distro.json"
 }
