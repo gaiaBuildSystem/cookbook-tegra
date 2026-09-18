@@ -64,7 +64,10 @@ sudo cp @(_EFI_IMAGE) @(f"{_IMAGE_MNT_BOOT}/EFI/BOOT/BOOTAA64.efi")
 
 # we need the extlinux also on the /boot partition for
 if not os.path.exists(f"{_IMAGE_MNT_BOOT}/boot"):
+    print("Creating boot directory in the image mount point...")
     sudo mkdir -p @(_IMAGE_MNT_BOOT)/boot
+else:
+    print("Boot directory already exists in the image mount point...")
 
 sudo -k cp -f @(_path)/@(_MACHINE)/extlinux.conf @(_IMAGE_MNT_BOOT)/boot/extlinux.conf
 
