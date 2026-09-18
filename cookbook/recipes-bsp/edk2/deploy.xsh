@@ -63,7 +63,9 @@ sudo mkdir -p @(f"{_IMAGE_MNT_BOOT}/EFI/BOOT/")
 sudo cp @(_EFI_IMAGE) @(f"{_IMAGE_MNT_BOOT}/EFI/BOOT/BOOTAA64.efi")
 
 # we need the extlinux also on the /boot partition for
-sudo mkdir -p @(_IMAGE_MNT_BOOT)/boot
+if not os.path.exists(f"{_IMAGE_MNT_BOOT}/boot"):
+    sudo mkdir -p @(_IMAGE_MNT_BOOT)/boot
+
 sudo -k cp -f @(_path)/@(_MACHINE)/extlinux.conf @(_IMAGE_MNT_BOOT)/boot/extlinux.conf
 
 
