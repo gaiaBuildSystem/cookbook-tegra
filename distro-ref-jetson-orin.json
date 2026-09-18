@@ -14,9 +14,16 @@
         "../gaia/cookbook",
         "./cookbook"
     ],
-    "includeRecipes": [
-        "edk2",
-        "u-boot"
+    "excludeRecipes": [
+        "grub",
+        "su-boot",
+        "u-boot-ram",
+        "microsoft",
+        "docker",
+        "powershell",
+        "neofetch",
+        "zeus-install",
+        "initramfs-php"
     ],
     "$schema": "./schema/distro.json"
 }
