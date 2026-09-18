@@ -17,35 +17,32 @@ saveenv
 
 # find the correct efi disk
 env set efidisk 0
-env set efidisk_found 0
-
-for i in 0 1 2 3 4 5 6 7 8 9
-    do
-        if test "${efidisk_found}" = "0"
-            then
-                if fatload efi $i:1 ${scriptaddr} ${label_name}
-                    then
-                        env set efidisk $i
-                        env set efidisk_found 1
-                fi
-        fi
-done
-env set efidisk_found
-
+env set kernel_addr_r 0xe0000000
+env set ramdisk_addr_r 0xe4000000
+# for tegra orin nano we do not load fdt because edk already did it
+env set fdt_addr 0x25f500000
 
 env set bootargs root=LABEL:gaia rootfstype=ext4
-env set bootargs ${bootargs} console=ttyS0,115200
+env set bootargs ${bootargs} mminit_loglevel=4
+env set bootargs ${bootargs} console=ttyTCU0,115200
+env set bootargs ${bootargs} firmware_class.path=/etc/firmware
+env set bootargs ${bootargs} fbcon=map:0 video=efifb:off console=tty0
+env set bootargs ${bootargs} efi_pstore.pstore_disable=1 pstore.backend=ramoops
+env set bootargs ${bootargs} efi=runtime pci=pcie_bus_perf
+env set bootargs ${bootargs} nvme.use_threaded_interrupts=1 swiotlb=2048 nv-auto-config
+env set bootargs ${bootargs} bl_prof_dataptr=2031616@0x267210000 bl_prof_ro_ptr=65536@0x267200000
 env set bootargs ${bootargs} logo.nologo vt.global_cursor_default=0
-env set bootargs ${bootargs} loglevel=${loglevel} zeus_install=${zeus_install}
+env set bootargs ${bootargs} loglevel=${loglevel}
 env set bootargs ${bootargs} ${extraargs}
+# env set bootargs ${bootargs} shell
 
 # load the kernel
-fatload efi ${efidisk}:1 ${kernel_addr_r} bzImage
+fatload efi ${efidisk}:1 ${kernel_addr_r} Image
 env set kernel_size ${filesize}
 
-# make sure we will not overlap the ramdisk by the uncompressed kernel
-env set ramdisk_addr_r 0x8000000
-fatload efi ${efidisk}:1 ${ramdisk_addr_r} initramfs.cpio.gz
+# for tegra orin nano we do not load it because edk already did it
+ext4load efi ${efidisk}:1 ${ramdisk_addr_r} initramfs.cpio.gz
 env set ramdisk_size ${filesize}
 
-zboot ${kernel_addr_r} ${kernel_size} ${ramdisk_addr_r} ${ramdisk_size}
+# boot using the efi edk
+bootedk ${kernel_addr_r} ${ramdisk_addr_r}:${ramdisk_size} ${fdt_addr}
