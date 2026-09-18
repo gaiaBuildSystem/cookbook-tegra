@@ -59,8 +59,8 @@ _EFI_IMAGE = f"{_WORKSPACE}/images/BOOTAA64_L4TLauncher_DEBUG.efi"
 
 
 # we need it on the /EFI/
-mkdir -p @(f"{_IMAGE_MNT_BOOT}/EFI/BOOT/")
-cp @(_EFI_IMAGE) @(f"{_IMAGE_MNT_BOOT}/EFI/BOOT/BOOTAA64.efi ")
+sudo mkdir -p @(f"{_IMAGE_MNT_BOOT}/EFI/BOOT/")
+sudo cp @(_EFI_IMAGE) @(f"{_IMAGE_MNT_BOOT}/EFI/BOOT/BOOTAA64.efi ")
 
 
 print("Deploy edk2-nvidia, OK", color=Color.WHITE, bg_color=BgColor.GREEN)
