@@ -43,7 +43,7 @@ if os.environ["MACHINE"] == "orin":
     # copy the device tree blob
     sudo -k \
         cp -f \
-        @(_BUILD_PATH)/tmp/@(_MACHINE)/linux/arch/arm64/boot/dts/nvidia/tegra234-p3737-0000-a0.dtb \
+        @(_BUILD_PATH)/tmp/@(_MACHINE)/linux/arch/arm64/boot/dts/nvidia/tegra234-p3768-0000+p3767-0005.dtb \
         @(_IMAGE_MNT_BOOT)/
 
 else:
