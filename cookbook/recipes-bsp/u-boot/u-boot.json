@@ -7,7 +7,7 @@
         "linux/arm64"
     ],
     "ref": {
-        "linux/arm64": "0c0988a0829e44993091a6cc4e764cda4c17f923"
+        "linux/arm64": "a179796ef0ac4b415a7276ff23013ed0ee2007a9"
     },
     "merge": true
 }
