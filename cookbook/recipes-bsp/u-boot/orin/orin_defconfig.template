@@ -59,7 +59,7 @@ CONFIG_CMD_DHRYSTONE=y
 CONFIG_BLK=y
 
 CONFIG_CMD_EFIDEBUG=y
-CONFIG_BOOTCOMMAND="fatload efi 0:1 ${scriptaddr} boot.scr.uimg; source ${scriptaddr}"
+CONFIG_BOOTCOMMAND="fatload efi 0:1 0xe0000000 boot.scr.uimg; source 0xe0000000"
 CONFIG_USE_BOOTCOMMAND=y
 CONFIG_LOADADDR=0x1000000
 CONFIG_CMD_EXT2=y
