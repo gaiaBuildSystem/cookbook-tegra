@@ -42,7 +42,7 @@ fatload efi ${efidisk}:1 ${kernel_addr_r} Image
 env set kernel_size ${filesize}
 
 # for tegra orin nano we do not load it because edk already did it
-ext4load efi ${efidisk}:1 ${ramdisk_addr_r} initramfs.cpio.gz
+fatload efi ${efidisk}:1 ${ramdisk_addr_r} initramfs.cpio.gz
 env set ramdisk_size ${filesize}
 
 # boot using the efi edk
