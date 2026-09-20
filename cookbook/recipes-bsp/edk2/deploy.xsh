@@ -62,14 +62,14 @@ _EFI_IMAGE = f"{_WORKSPACE}/images/BOOTAA64_L4TLauncher_DEBUG.efi"
 sudo mkdir -p @(f"{_IMAGE_MNT_BOOT}/EFI/BOOT/")
 sudo cp @(_EFI_IMAGE) @(f"{_IMAGE_MNT_BOOT}/EFI/BOOT/BOOTAA64.efi")
 
-# we need the extlinux also on the /boot partition for
-if not os.path.exists(f"{_IMAGE_MNT_BOOT}/boot"):
-    print("Creating boot directory in the image mount point...")
-    sudo mkdir -p @(_IMAGE_MNT_BOOT)/boot
+# L4TLauncher looks for boot\extlinux\extlinux.conf on the boot partition
+if not os.path.exists(f"{_IMAGE_MNT_BOOT}/boot/extlinux"):
+    print("Creating extlinux directory in the image mount point...")
+    sudo mkdir -p @(_IMAGE_MNT_BOOT)/boot/extlinux
 else:
-    print("Boot directory already exists in the image mount point...")
+    print("Extlinux directory already exists in the image mount point...")
 
-sudo -k cp -f @(_path)/@(_MACHINE)/extlinux.conf @(_IMAGE_MNT_BOOT)/boot/extlinux.conf
+sudo -k cp -f @(_path)/@(_MACHINE)/extlinux.conf @(_IMAGE_MNT_BOOT)/boot/extlinux/extlinux.conf
 
 
 print("Deploy edk2-nvidia, OK", color=Color.WHITE, bg_color=BgColor.GREEN)

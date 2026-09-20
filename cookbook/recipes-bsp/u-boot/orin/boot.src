@@ -17,10 +17,11 @@ saveenv
 
 # find the correct efi disk
 env set efidisk 0
-env set kernel_addr_r 0xe0000000
-env set ramdisk_addr_r 0xe4000000
+env set scriptaddr 0xe0000000
+env set kernel_addr_r 0xe0200000
+env set ramdisk_addr_r 0xe9000000
 # for tegra orin nano we do not load fdt because edk already did it
-env set fdt_addr 0x25f500000
+env set fdt_addr 0x25b73d000
 
 env set bootargs root=LABEL:gaia rootfstype=ext4
 env set bootargs ${bootargs} mminit_loglevel=4
