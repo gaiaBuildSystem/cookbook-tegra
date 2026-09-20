@@ -28,6 +28,7 @@ print(
 
 # get the common variables
 _ARCH = os.environ.get('ARCH')
+_CLEAN = os.environ.get('CLEAN_IMAGE')
 _MACHINE = os.environ.get('MACHINE')
 _MAX_IMG_SIZE = os.environ.get('MAX_IMG_SIZE')
 _BUILD_PATH = os.environ.get('BUILD_PATH')
@@ -71,6 +72,27 @@ for _script in [
 
 mkdir -p @(_DEPLOY_DIR)
 
+# ccache keeps compiled objects across builds even when the EDK2 Build
+# directory itself is wiped for disk space, so unchanged sources still
+# hit the cache instead of recompiling from scratch.
+_CCACHE_DIR = f"{_BUILD_ROOT}/ccache"
+_CCACHE_BIN = f"{_BUILD_ROOT}/ccache_bin"
+os.environ['CCACHE_DIR'] = _CCACHE_DIR
+$CCACHE_DIR = _CCACHE_DIR
+os.makedirs(_CCACHE_BIN, exist_ok=True)
+
+_CCACHE_PATH = $(which ccache).strip()
+for _compiler in ["gcc-12", "g++-12", "gcc", "g++", "cc", "c++"]:
+    _link = f"{_CCACHE_BIN}/{_compiler}"
+    if not os.path.exists(_link):
+        os.symlink(_CCACHE_PATH, _link)
+
+os.environ['PATH'] = f"{_CCACHE_BIN}:{os.environ['PATH']}"
+$PATH.insert(0, _CCACHE_BIN)
+
+ccache -M 10G
+ccache -z
+
 # get the defconfig for the target machine
 _DEFCONFIG = meta["customData"]["tegra_defconfigs"].get(_MACHINE)
 if not _DEFCONFIG:
@@ -86,9 +108,11 @@ if not os.path.exists(_defconfig_path):
         Error.EINVAL
     )
 
-# remove build output to avoid running out of space.  The image is kept.
-print("Removing Build directory")
-rm -rf Build
+# only wipe the build output on an explicit clean request; otherwise keep
+# it around so the EDK2 build system can do an incremental rebuild.
+if _CLEAN == "true":
+    print("Removing Build directory")
+    rm -rf Build
 
 print(f"Building defconfig: {_DEFCONFIG}")
 edk2-nvidia/Platform/NVIDIA/Tegra/build.sh --init-defconfig @(_defconfig_path)
@@ -105,6 +129,8 @@ edk2-nvidia/Platform/NVIDIA/L4TLauncher/build.sh
 
 # copy the build logs from non-Kconfig images
 cp -v Build/*.txt @(_DEPLOY_DIR)
+
+ccache -s
 
 print(
     "building edk2-nvidia, ok",

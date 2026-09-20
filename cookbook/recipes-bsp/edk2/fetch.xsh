@@ -58,11 +58,11 @@ _COMBO = meta["customData"]["nvidia_manifest"]["ref"]
 os.makedirs(_BUILD_ROOT, exist_ok=True)
 
 # edk repo is a dependencie
-if _CLEAN == "true":
-    if os.path.exists(_EDKREPO_DIR):
-        rm -rf @(_EDKREPO_DIR)
-    if os.path.exists(_WORKSPACE):
-        rm -rf @(_WORKSPACE)
+# if _CLEAN == "true":
+#     if os.path.exists(_EDKREPO_DIR):
+#         rm -rf @(_EDKREPO_DIR)
+#     if os.path.exists(_WORKSPACE):
+#         rm -rf @(_WORKSPACE)
 
 if not os.path.exists(_EDKREPO_DIR):
     os.chdir(f"{_BUILD_ROOT}")

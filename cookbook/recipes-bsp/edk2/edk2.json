@@ -34,7 +34,8 @@
         "device-tree-compiler",
         "mono-devel",
         "lcov",
-        "acpica-tools"
+        "acpica-tools",
+        "ccache"
     ],
     "fetchRecipes": [
         "fetch.xsh"
