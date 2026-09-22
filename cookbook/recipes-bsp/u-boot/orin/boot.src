@@ -17,11 +17,10 @@ saveenv
 
 # find the correct efi disk
 env set efidisk 0
+env set fdt_addr 0xe1000000
 env set scriptaddr 0xe0000000
-env set kernel_addr_r 0xe0200000
-env set ramdisk_addr_r 0xe9000000
-# for tegra orin nano we do not load fdt because edk already did it
-env set fdt_addr 0x25b713000
+env set kernel_addr_r 0xe3000000
+env set ramdisk_addr_r 0xea000000
 
 env set bootargs root=LABEL:gaia rootfstype=ext4
 # env set bootargs ${bootargs} mminit_loglevel=4
@@ -40,7 +39,10 @@ env set bootargs ${bootargs} ${extraargs}
 fatload efi ${efidisk}:1 ${kernel_addr_r} Image
 env set kernel_size ${filesize}
 
-# for tegra orin nano we do not load it because edk already did it
+# device tree
+fatload efi ${efidisk}:1 ${fdt_addr} tegra234-p3768-0000+p3767-0005-nv-super.dtb
+
+# ramdisk
 fatload efi ${efidisk}:1 ${ramdisk_addr_r} initramfs.cpio.gz
 env set ramdisk_size ${filesize}
 
