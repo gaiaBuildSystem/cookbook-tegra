@@ -17,7 +17,7 @@ saveenv
 
 # find the correct efi disk
 env set efidisk 0
-env set fdt_addr 0xe1000000
+env set fdt_addr 0x25f500000
 env set scriptaddr 0xe0000000
 env set kernel_addr_r 0xe3000000
 env set ramdisk_addr_r 0xea000000
