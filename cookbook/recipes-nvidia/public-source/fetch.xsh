@@ -12,6 +12,7 @@ $XONSH_SUBPROC_CMD_RAISE_ERROR = True
 import os
 import sys
 import json
+import glob
 import subprocess
 import os.path
 from torizon_templates_utils.colors import print,BgColor,Color
@@ -60,11 +61,37 @@ os.chdir(_PUBLIC_SOURCE_DIR)
 if not os.path.exists("Linux_for_Tegra"):
     wget -O- @(meta["source"]) | tar jxvf -
 
-    # also let's take the opportunity to unpack all the .tbz2 files
+    # unpack the nvidia source packages, mirroring source/source.sh: only
+    # .tbz2 files that ship a nvbuild.sh are relevant, each one is extracted
+    # into its own src_out/<pkg>_build directory (kernel needs extra OOT tarballs)
     os.chdir(_L4T_DIR)
-    for tbz2_file in os.listdir("."):
-        if tbz2_file.endswith(".tbz2"):
-            tar jxvf @(tbz2_file)
+    _SRC_BUILD_DIR = f"{_L4T_DIR}/src_out"
+    for tbz2_file in sorted(glob.glob("**/*.tbz2", recursive=True)):
+        _pkg_name = tbz2_file[:-len(".tbz2")]
+        _pkg_build_dir = f"{_SRC_BUILD_DIR}/{_pkg_name}_build"
+
+        _tar_list = subprocess.run(
+            ["tar", "-tf", tbz2_file], capture_output=True, text=True, check=True
+        ).stdout
+        if "nvbuild.sh" not in _tar_list:
+            print(
+                f"nvbuild.sh not found for package {tbz2_file}, skipping."
+            )
+            print("please wait ...")
+            continue
+
+        mkdir -p @(_pkg_build_dir)
+        if not os.path.exists(f"{_pkg_build_dir}/nvbuild.sh"):
+            tar jxf @(tbz2_file) -C @(_pkg_build_dir)
+
+            if os.path.basename(tbz2_file) == "kernel_src.tbz2":
+                for _extra_tbz2 in (
+                    "kernel_oot_modules_src.tbz2",
+                    "nvidia_kernel_display_driver_source.tbz2",
+                    "nvidia_unified_gpu_display_driver_source.tbz2"
+                ):
+                    if os.path.exists(_extra_tbz2):
+                        tar jxf @(_extra_tbz2) -C @(_pkg_build_dir)
 else:
     print(
         "Linux_for_Tegra directory already exists, skipping fetch.",
