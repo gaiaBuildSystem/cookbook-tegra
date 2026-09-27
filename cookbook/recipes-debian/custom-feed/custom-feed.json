@@ -1,0 +1,24 @@
+{
+    "name": "custom-feed",
+    "type": "config",
+    "priority": 1,
+    "support": [
+        "linux/amd64",
+        "linux/arm64"
+    ],
+    "customData": {
+        "orin": {
+            "feeds": [
+                {
+                    "name": "toradex",
+                    "feedUrl": "feeds.toradex.com",
+                    "feedUri": "https://feeds.toradex.com/torizon/jetson/snapshots/20260923T145410Z",
+                    "suites": "experimental",
+                    "components": "main non-free",
+                    "gpgKeyUrl": "https://feeds.toradex.com/torizon/jetson/toradex-debian-repo-07102024.asc"
+                }
+            ]
+        }
+    },
+    "merge": true
+}
