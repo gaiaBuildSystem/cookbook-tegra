@@ -55,10 +55,22 @@ _nproc = os.cpu_count()
 os.chdir(_L4T_DIR)
 
 # now the jiripoca vai vua
+# this will build the nvidia open source kernel drivers
+# nvidia-drm
+# nvidia-modeset
 make modules \
     SYSSRC=@(_GAIA_LINUX) \
     SYSOUT=@(_GAIA_LINUX) \
     ARCH=arm64 \
+    CROSS_COMPILE=aarch64-linux-gnu- \
+    -j@(_nproc)
+
+
+# now the jiripoca vai vua 2
+# this will build the nvidia out-of-tree kernel module
+make nvidia-oot \
+    KERNEL_HEADERS=@(_GAIA_LINUX) \
+    KERNEL_OUTPUT=@(_GAIA_LINUX) \
     CROSS_COMPILE=aarch64-linux-gnu- \
     -j@(_nproc)
 
