@@ -1,0 +1,33 @@
+{
+    "name": "public-source",
+    "type": "kernelModule",
+    "priority": 0,
+    "version": "39.2.1",
+    "support": [
+        "linux/arm64"
+    ],
+    "source": "https://developer.nvidia.com/downloads/embedded/L4T/r39_Release_v2.1/sources/public_sources.tbz2",
+    "hostDeps": [
+        "bzip2",
+        "tar",
+        "build-essential",
+        "bc",
+        "flex",
+        "bison",
+        "libelf-dev",
+        "libssl-dev",
+        "libncurses-dev",
+        "kmod",
+        "pahole",
+        "perl",
+        "libperl-dev",
+        "python3",
+        "libpython3-dev",
+        "gcc-aarch64-linux-gnu",
+        "g++-aarch64-linux-gnu",
+        "binutils-aarch64-linux-gnu"
+    ],
+    "fetchRecipes": [
+        "fetch.xsh"
+    ]
+}
