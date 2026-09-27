@@ -51,6 +51,7 @@ os.environ['IMAGE_MNT_ROOT'] = _IMAGE_MNT_ROOT
 # prepare the public source directory
 _BUILD_ROOT = f"{_BUILD_PATH}/tmp/{_MACHINE}"
 _PUBLIC_SOURCE_DIR = f"{_BUILD_ROOT}/public_source"
+_L4T_DIR = f"{_PUBLIC_SOURCE_DIR}/Linux_for_Tegra/source"
 mkdir -p @(_PUBLIC_SOURCE_DIR)
 
 # fetch the public_sources.tbz2
@@ -58,6 +59,12 @@ os.chdir(_PUBLIC_SOURCE_DIR)
 
 if not os.path.exists("Linux_for_Tegra"):
     wget -O- @(meta["source"]) | tar jxvf -
+
+    # also let's take the opportunity to unpack all the .tbz2 files
+    os.chdir(_L4T_DIR)
+    for tbz2_file in os.listdir("."):
+        if tbz2_file.endswith(".tbz2"):
+            tar jxvf @(tbz2_file)
 else:
     print(
         "Linux_for_Tegra directory already exists, skipping fetch.",
