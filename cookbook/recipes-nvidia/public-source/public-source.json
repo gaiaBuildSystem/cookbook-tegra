@@ -11,7 +11,7 @@
     ],
     "source": "https://developer.nvidia.com/downloads/embedded/L4T/r39_Release_v2.1/sources/public_sources.tbz2",
     "hostDeps": [
-        "xz",
+        "xz-utils",
         "device-tree-compiler",
         "bzip2",
         "tar",
