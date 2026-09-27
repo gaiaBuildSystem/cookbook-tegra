@@ -12,7 +12,7 @@
                 {
                     "name": "toradex",
                     "feedUrl": "feeds.toradex.com",
-                    "feedUri": "https://feeds.toradex.com/torizon/jetson/snapshots/20260923T145410Z",
+                    "feedUri": "https://feeds.toradex.com/torizon/jetson/snapshots/20260923T145410Z/forky/wrynose",
                     "suites": "experimental",
                     "components": "main non-free",
                     "gpgKeyUrl": "https://feeds.toradex.com/torizon/jetson/toradex-debian-repo-07102024.asc"
