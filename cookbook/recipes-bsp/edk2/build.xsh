@@ -118,7 +118,7 @@ print(f"Building defconfig: {_DEFCONFIG}")
 edk2-nvidia/Platform/NVIDIA/Tegra/build.sh --init-defconfig @(_defconfig_path)
 
 # keep the build logs
-cp -v Build/*.txt @(_DEPLOY_DIR)
+sudo -k cp -v Build/*.txt @(_DEPLOY_DIR)
 
 # build all non-Kconfig images
 edk2-nvidia/Platform/NVIDIA/StandaloneMmOptee/build.sh
@@ -128,7 +128,7 @@ edk2-nvidia/Platform/NVIDIA/DeviceTree/build.sh
 edk2-nvidia/Platform/NVIDIA/L4TLauncher/build.sh
 
 # copy the build logs from non-Kconfig images
-cp -v Build/*.txt @(_DEPLOY_DIR)
+sudo -k cp -v Build/*.txt @(_DEPLOY_DIR)
 
 ccache -s
 
