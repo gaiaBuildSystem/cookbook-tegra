@@ -2,12 +2,17 @@
     "name": "public-source",
     "type": "kernelModule",
     "priority": 0,
+    "buildDependencies": [
+        "linux"
+    ],
     "version": "39.2.1",
     "support": [
         "linux/arm64"
     ],
     "source": "https://developer.nvidia.com/downloads/embedded/L4T/r39_Release_v2.1/sources/public_sources.tbz2",
     "hostDeps": [
+        "xz",
+        "device-tree-compiler",
         "bzip2",
         "tar",
         "build-essential",
@@ -29,5 +34,8 @@
     ],
     "fetchRecipes": [
         "fetch.xsh"
+    ],
+    "buildRecipes": [
+        "build.xsh"
     ]
 }
