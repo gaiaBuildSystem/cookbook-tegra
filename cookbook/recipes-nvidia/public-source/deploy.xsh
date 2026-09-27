@@ -59,10 +59,12 @@ sudo cp @(_path)/assets/nvidia.conf @(_IMAGE_MNT_ROOT)/etc/modules-load.d/nvidia
 
 # deploy the drivers
 os.chdir(_L4T_DIR)
-make modules_install \
+sudo -k make modules_install \
     NV_OOT_TEGRA_HV_SKIP_BUILD=y \
     NV_OOT_IVC_EXT_SKIP_BUILD=y \
     NV_OOT_TEGRA_BPMP_SKIP_BUILD=y \
+    KERNEL_HEADERS=@(_GAIA_LINUX) \
+    KERNEL_OUTPUT=@(_GAIA_LINUX) \
     ARCH=arm64 \
     CROSS_COMPILE=aarch64-linux-gnu- \
     INSTALL_MOD_PATH=@(_IMAGE_MNT_ROOT) \
