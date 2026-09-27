@@ -47,7 +47,7 @@ _IMAGE_MNT_BOOT = f"{_BUILD_PATH}/tmp/{_MACHINE}/mnt/boot"
 _IMAGE_MNT_ROOT = f"{_BUILD_PATH}/tmp/{_MACHINE}/mnt/root"
 _BUILD_ROOT = f"{_BUILD_PATH}/tmp/{_MACHINE}"
 _PUBLIC_SOURCE_DIR = f"{_BUILD_ROOT}/public_source"
-_L4T_DIR = f"{_PUBLIC_SOURCE_DIR}/Linux_for_Tegra/source"
+_L4T_DIR = f"{_PUBLIC_SOURCE_DIR}/Linux_for_Tegra/source/src_out/kernel_src_build"
 _GAIA_LINUX = f"{_BUILD_ROOT}/linux"
 
 _nproc = os.cpu_count()
@@ -59,18 +59,12 @@ os.chdir(_L4T_DIR)
 # nvidia-drm
 # nvidia-modeset
 make modules \
-    SYSSRC=@(_GAIA_LINUX) \
-    SYSOUT=@(_GAIA_LINUX) \
-    ARCH=arm64 \
-    CROSS_COMPILE=aarch64-linux-gnu- \
-    -j@(_nproc)
-
-
-# now the jiripoca vai vua 2
-# this will build the nvidia out-of-tree kernel module
-make nvidia-oot \
+    NV_OOT_TEGRA_HV_SKIP_BUILD=y \
+    NV_OOT_IVC_EXT_SKIP_BUILD=y \
+    NV_OOT_TEGRA_BPMP_SKIP_BUILD=y \
     KERNEL_HEADERS=@(_GAIA_LINUX) \
     KERNEL_OUTPUT=@(_GAIA_LINUX) \
+    ARCH=arm64 \
     CROSS_COMPILE=aarch64-linux-gnu- \
     -j@(_nproc)
 
