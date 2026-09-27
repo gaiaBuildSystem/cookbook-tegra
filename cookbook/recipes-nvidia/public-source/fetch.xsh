@@ -55,7 +55,15 @@ mkdir -p @(_PUBLIC_SOURCE_DIR)
 
 # fetch the public_sources.tbz2
 os.chdir(_PUBLIC_SOURCE_DIR)
-wget -O- @(meta["source"]) | tar jxvf -
+
+if not os.path.exists("Linux_for_Tegra"):
+    wget -O- @(meta["source"]) | tar jxvf -
+else:
+    print(
+        "Linux_for_Tegra directory already exists, skipping fetch.",
+        color=Color.WHITE,
+        bg_color=BgColor.YELLOW
+    )
 
 
 print("Fetch public nvidia drivers source, OK", color=Color.WHITE, bg_color=BgColor.GREEN)
