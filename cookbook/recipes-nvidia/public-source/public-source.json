@@ -37,5 +37,8 @@
     ],
     "buildRecipes": [
         "build.xsh"
+    ],
+    "deployRecipes": [
+        "deploy.xsh"
     ]
 }
