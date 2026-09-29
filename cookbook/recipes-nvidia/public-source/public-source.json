@@ -35,6 +35,9 @@
     "fetchRecipes": [
         "fetch.xsh"
     ],
+    "patchRecipes": [
+        "patch.xsh"
+    ],
     "buildRecipes": [
         "build.xsh"
     ],
