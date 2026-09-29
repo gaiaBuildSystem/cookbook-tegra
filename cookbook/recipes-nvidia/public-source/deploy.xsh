@@ -52,10 +52,22 @@ _GAIA_LINUX = f"{_BUILD_ROOT}/linux"
 
 _nproc = os.cpu_count()
 
-# also we need to deploy the /etc/modules-load.d/nvidia.conf
-sudo mkdir -p @(_IMAGE_MNT_ROOT)/etc/modules-load.d
-sudo cp @(_path)/assets/nvidia.conf @(_IMAGE_MNT_ROOT)/etc/modules-load.d/nvidia.conf
+# add the service and enable it
+sudo cp @(_path)/assets/nvidia-drm.service @(_IMAGE_MNT_ROOT)/etc/systemd/system/nvidia-drm.service
+enable_nvidia_drm_cmd = (
+    f"sudo -k "
+    f"chroot {_IMAGE_MNT_ROOT} /bin/bash -c \""
+    f"systemctl enable nvidia-drm.service"
+    f"\""
+)
 
+subprocess.run(
+    enable_nvidia_drm_cmd,
+    shell=True,
+    check=True,
+    executable="/bin/bash",
+    env=os.environ
+)
 
 # deploy the drivers
 os.chdir(_L4T_DIR)

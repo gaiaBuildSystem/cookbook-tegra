@@ -1,0 +1,11 @@
+[Unit]
+Description=Load nvidia-drm
+After=splash-stop.service
+Wants=splash-stop.service
+
+[Service]
+Type=oneshot
+ExecStart=modprobe nvidia-drm
+
+[Install]
+WantedBy=multi-user.target
