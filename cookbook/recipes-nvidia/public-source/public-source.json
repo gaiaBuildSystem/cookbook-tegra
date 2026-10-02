@@ -11,7 +11,7 @@
     ],
     "source": "https://github.com/gaiaBuildSystem/nvidia-public-drivers.git",
     "ref": {
-        "linux/arm64": "6bb4e2950d9c24483ee192995fe91f6d289f3d2a"
+        "linux/arm64": "2ca59eb54b818f0249a1256ba759c5896ef46a7a"
     },
     "hostDeps": [
         "xz-utils",
