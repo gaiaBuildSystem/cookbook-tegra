@@ -52,52 +52,16 @@ os.environ['IMAGE_MNT_ROOT'] = _IMAGE_MNT_ROOT
 # prepare the public source directory
 _BUILD_ROOT = f"{_BUILD_PATH}/tmp/{_MACHINE}"
 _PUBLIC_SOURCE_DIR = f"{_BUILD_ROOT}/public_source"
-_L4T_DIR = f"{_PUBLIC_SOURCE_DIR}/Linux_for_Tegra/source"
-mkdir -p @(_PUBLIC_SOURCE_DIR)
+_L4T_DIR = f"{_PUBLIC_SOURCE_DIR}/Linux_for_Tegra/source/src_out/kernel_src_build"
+mkdir -p @(_L4T_DIR)
 
-# fetch the public_sources.tbz2
-os.chdir(_PUBLIC_SOURCE_DIR)
+os.chdir(_L4T_DIR)
 
-if not os.path.exists("Linux_for_Tegra"):
-    wget -O- @(meta["source"]) | tar jxvf -
+# clone directly into kernel_src_build, no sub folder
+if not os.path.exists(f"{_L4T_DIR}/.git"):
+    git clone @(meta["source"]) .
 
-    # unpack the nvidia source packages, mirroring source/source.sh: only
-    # .tbz2 files that ship a nvbuild.sh are relevant, each one is extracted
-    # into its own src_out/<pkg>_build directory (kernel needs extra OOT tarballs)
-    os.chdir(_L4T_DIR)
-    _SRC_BUILD_DIR = f"{_L4T_DIR}/src_out"
-    for tbz2_file in sorted(glob.glob("**/*.tbz2", recursive=True)):
-        _pkg_name = tbz2_file[:-len(".tbz2")]
-        _pkg_build_dir = f"{_SRC_BUILD_DIR}/{_pkg_name}_build"
-
-        _tar_list = subprocess.run(
-            ["tar", "-tf", tbz2_file], capture_output=True, text=True, check=True
-        ).stdout
-        if "nvbuild.sh" not in _tar_list:
-            print(
-                f"nvbuild.sh not found for package {tbz2_file}, skipping."
-            )
-            print("please wait ...")
-            continue
-
-        mkdir -p @(_pkg_build_dir)
-        if not os.path.exists(f"{_pkg_build_dir}/nvbuild.sh"):
-            tar jxf @(tbz2_file) -C @(_pkg_build_dir)
-
-            if os.path.basename(tbz2_file) == "kernel_src.tbz2":
-                for _extra_tbz2 in (
-                    "kernel_oot_modules_src.tbz2",
-                    "nvidia_kernel_display_driver_source.tbz2",
-                    "nvidia_unified_gpu_display_driver_source.tbz2"
-                ):
-                    if os.path.exists(_extra_tbz2):
-                        tar jxf @(_extra_tbz2) -C @(_pkg_build_dir)
-else:
-    print(
-        "Linux_for_Tegra directory already exists, skipping fetch.",
-        color=Color.WHITE,
-        bg_color=BgColor.YELLOW
-    )
+git checkout @(meta["ref"]["linux/arm64"])
 
 
 print("Fetch public nvidia drivers source, OK", color=Color.WHITE, bg_color=BgColor.GREEN)

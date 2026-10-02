@@ -9,7 +9,10 @@
     "support": [
         "linux/arm64"
     ],
-    "source": "https://developer.nvidia.com/downloads/embedded/L4T/r39_Release_v2.1/sources/public_sources.tbz2",
+    "source": "https://github.com/gaiaBuildSystem/nvidia-public-drivers.git",
+    "ref": {
+        "linux/arm64": "6bb4e2950d9c24483ee192995fe91f6d289f3d2a"
+    },
     "hostDeps": [
         "xz-utils",
         "device-tree-compiler",
@@ -34,9 +37,6 @@
     ],
     "fetchRecipes": [
         "fetch.xsh"
-    ],
-    "patchRecipes": [
-        "patch.xsh"
     ],
     "buildRecipes": [
         "build.xsh"
